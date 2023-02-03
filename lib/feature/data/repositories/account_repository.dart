@@ -18,6 +18,9 @@ class AccountRepositoryImpl implements AccountRepository {
 
   @override
   Future<UserModel> signIn(SignInModel model) async {
+    print('attempting login');
+    await Future.delayed(Duration(seconds: 3));
+    print('logged in ${model.login}');
     final response = await accountRemoteDataSource.signIn(model);
     return await sign(response);
   }

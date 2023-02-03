@@ -174,64 +174,64 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
   }
 }
 
-class SendGroup extends StatelessWidget {
-  const SendGroup({
-    super.key,
-    required this.groupModel,
-    required this.groupName,
-  });
-  final CreateUpdateGroupModel groupModel;
-  final String groupName;
+// class SendGroup extends StatelessWidget {
+//   const SendGroup({
+//     super.key,
+//     required this.groupModel,
+//     required this.groupName,
+//   });
+//   final CreateUpdateGroupModel groupModel;
+//   final String groupName;
 
-  @override
-  Widget build(BuildContext context) {
-    BlocProvider.of<GroupListBloc>(context, listen: false)
-        .add(CreateGroupEvent(groupModel: groupModel));
-    return BlocBuilder<GroupListBloc, GroupState>(
-      builder: ((context, state) {
-        if (state is GroupLoadingState) {
-          return Center(child: CircularProgressIndicator());
-        } else if (state is GroupLoadedState) {
-          return GroupHomeScreen(
-            name: AppSettings.user!.name,
-          );
+//   @override
+//   Widget build(BuildContext context) {
+//     BlocProvider.of<GroupListBloc>(context, listen: false)
+//         .add(CreateGroupEvent(groupModel: groupModel));
+//     return BlocBuilder<GroupListBloc, GroupState>(
+//       builder: ((context, state) {
+//         if (state is GroupLoadingState) {
+//           return Center(child: CircularProgressIndicator());
+//         } else if (state is GroupLoadedState) {
+//           return GroupHomeScreen(
+//             name: AppSettings.user!.name,
+//           );
 
-          // return GroupInfoScreen(
-          //   groupName: groupName,
-          //   name: AppSettings.user!.name,
-          //   groupEntity: AppSettings.group,
-          // );
+//           // return GroupInfoScreen(
+//           //   groupName: groupName,
+//           //   name: AppSettings.user!.name,
+//           //   groupEntity: AppSettings.group,
+//           // );
 
-          // Scaffold(
-          //   body: Container(
-          //       child: Center(
-          //     child: ElevatedButton(
-          //       onPressed: () {
-          //         Navigator.push(
-          //             context,
-          //             MaterialPageRoute(
-          //                 builder: ((context) =>
-          //                     GroupHomeScreen(name: AppSettings.user!.name))));
-          //       },
-          //       child: Text('Press'),
-          //     ),
-          //   )),
-          // );
-        } else if (state is GroupErrorState) {
-          Scaffold(
-            body: Center(
-              child: Text(
-                'Bad result',
-                style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          );
-        }
-        return Container();
-      }),
-    );
-  }
-}
+//           // Scaffold(
+//           //   body: Container(
+//           //       child: Center(
+//           //     child: ElevatedButton(
+//           //       onPressed: () {
+//           //         Navigator.push(
+//           //             context,
+//           //             MaterialPageRoute(
+//           //                 builder: ((context) =>
+//           //                     GroupHomeScreen(name: AppSettings.user!.name))));
+//           //       },
+//           //       child: Text('Press'),
+//           //     ),
+//           //   )),
+//           // );
+//         } else if (state is GroupErrorState) {
+//           Scaffold(
+//             body: Center(
+//               child: Text(
+//                 'Bad result',
+//                 style: TextStyle(
+//                     color: Colors.red,
+//                     fontSize: 20,
+//                     fontWeight: FontWeight.bold),
+//               ),
+//             ),
+//           );
+//         }
+//         return Container();
+//       }),
+//     );
+//   }
+// }

@@ -105,6 +105,7 @@ Widget DrawerListWidget(BuildContext context, String name) {
                         )));
           }),
           child: ListTile(
+            leading: Icon(Icons.home),
             title: Text(
               'Home',
               style: TextStyle(fontSize: 20),

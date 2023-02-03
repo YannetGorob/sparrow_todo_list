@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sparrow_todo_list/common/app_colors.dart';
-
-import 'package:sparrow_todo_list/feature/data/models/account/sign_in_model.dart';
-import 'package:sparrow_todo_list/feature/presentation/bloc/sign_bloc/sign_bloc.dart';
-import 'package:sparrow_todo_list/feature/presentation/bloc/sign_bloc/sign_event.dart';
-import 'package:sparrow_todo_list/feature/presentation/bloc/sign_bloc/sign_state.dart';
 import 'package:sparrow_todo_list/feature/presentation/widgets/form_sign_in_widget.dart';
 
 class SignInScreen extends StatelessWidget {
@@ -28,7 +22,8 @@ class SignInScreen extends StatelessWidget {
         ),
         backgroundColor: AppColors.mainBacgroundColor,
       ),
-      body: FormWidget(),
+      body: SignInView(),
     );
   }
 }
+

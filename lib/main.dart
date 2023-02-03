@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sparrow_todo_list/common/app_colors.dart';
 import 'package:sparrow_todo_list/feature/presentation/bloc/group_list_bloc/group_list_bloc.dart';
+import 'package:sparrow_todo_list/feature/presentation/bloc/sign_bloc/login/login_bloc.dart';
 import 'package:sparrow_todo_list/feature/presentation/bloc/tasks_bloc/tasks_bloc.dart';
 import 'package:sparrow_todo_list/feature/presentation/pages/home_screen.dart';
 import 'package:sparrow_todo_list/locator_service.dart' as di;
@@ -22,6 +23,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => sl<SignBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<LoginBloc>(),
         ),
         BlocProvider(
           create: (context) => sl<GroupListBloc>(),

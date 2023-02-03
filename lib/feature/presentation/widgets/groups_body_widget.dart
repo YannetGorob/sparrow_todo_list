@@ -43,14 +43,6 @@ class GroupBodyWidget extends StatelessWidget {
             group: group,
           ),
           SizedBox(height: 20),
-          Text(
-            "Important Tasks".toUpperCase(),
-            style: TextStyle(
-                fontSize: 17,
-                color: AppColors.helpTextColor,
-                fontWeight: FontWeight.w600),
-          ),
-          SizedBox(height: 20),
           ImportantTasksWidget(
             group: group,
           ),

@@ -2,12 +2,172 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sparrow_todo_list/common/app_colors.dart';
 import 'package:sparrow_todo_list/feature/data/models/account/sign_in_model.dart';
+import 'package:sparrow_todo_list/feature/presentation/bloc/sign_bloc/form_submission_status.dart';
+import 'package:sparrow_todo_list/feature/presentation/bloc/sign_bloc/login/login_bloc.dart';
+import 'package:sparrow_todo_list/feature/presentation/bloc/sign_bloc/login/login_event.dart';
+import 'package:sparrow_todo_list/feature/presentation/bloc/sign_bloc/login/login_state.dart';
 import 'package:sparrow_todo_list/feature/presentation/bloc/sign_bloc/sign_bloc.dart';
 import 'package:sparrow_todo_list/feature/presentation/bloc/sign_bloc/sign_event.dart';
 import 'package:sparrow_todo_list/feature/presentation/bloc/sign_bloc/sign_state.dart';
 import 'package:sparrow_todo_list/feature/presentation/pages/group_home_screen.dart';
-import 'package:sparrow_todo_list/feature/presentation/pages/sign_in_screen.dart';
 import 'package:sparrow_todo_list/feature/presentation/pages/sign_up_screen.dart';
+
+class SignInView extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
+  final _loginFormController = TextEditingController();
+  final _passwordFormController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return _signInForm();
+  }
+
+  Widget _signInForm() {
+    return BlocConsumer<LoginBloc, LoginState>(listener: (context, state) {
+      final formStatus = state.formStatus;
+
+      if (formStatus is SubmissionFailed) {
+        print('fail');
+        _showSnackBar(context, formStatus.exeption.toString());
+      } else if (state.formStatus is SubmitionSucces) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => GroupHomeScreen(
+                      name: _loginFormController.text,
+                    )));
+      }
+    }, builder: (context, state) {
+      return Form(
+          key: _formKey,
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 80, top: 50, left: 30),
+              child: Column(children: [
+                Text(
+                  'Welcome!',
+                  style: TextStyle(
+                      fontSize: 35,
+                      color: AppColors.mainTextColor,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Sign in to continue',
+                  style:
+                      TextStyle(fontSize: 20, color: AppColors.helpTextColor),
+                ),
+              ]),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Login',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(height: 10),
+                  _loginField(),
+                  SizedBox(height: 10),
+                  Text(
+                    'Password',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(height: 10),
+                  _passwordField(),
+                  SizedBox(height: 100),
+                  _signinButton(),
+                ],
+              ),
+            ),
+          ]));
+    });
+  }
+
+  Widget _loginField() {
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: ((context, state) {
+        return TextFormField(
+          controller: _loginFormController,
+          decoration: textFieldDecoration(),
+          validator: (value) =>
+              state.isValidUsername ? null : 'Username is too short',
+          onChanged: ((value) => context.read<LoginBloc>().add(
+                LoginUsernameChanged(_loginFormController.text),
+              )),
+        );
+      }),
+    );
+  }
+
+  Widget _passwordField() {
+    return BlocBuilder<LoginBloc, LoginState>(builder: ((context, state) {
+      return TextFormField(
+        controller: _passwordFormController,
+        obscureText: true,
+        decoration: textFieldDecoration(),
+        validator: (value) =>
+            state.isValidPassword ? null : 'Password is to short',
+        onChanged: (value) => context.read<LoginBloc>().add(
+              LoginPasswordChanged(_passwordFormController.text),
+            ),
+      );
+    }));
+  }
+
+  Widget _signinButton() {
+    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+      return state.formStatus is FormSubmitting
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Container(
+              height: 60,
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    context.read<LoginBloc>().add(LoginSubmitted(
+                          SignInModel(
+                              login: _loginFormController.text,
+                              password: _passwordFormController.text),
+                        ));
+                  }
+                },
+                child: Text(
+                  'Sign In'.toUpperCase(),
+                  style: TextStyle(
+                    letterSpacing: 1,
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
+                style: _buttonStyle(),
+              ),
+            );
+    });
+  }
+}
+
+ButtonStyle _buttonStyle() {
+  return ElevatedButton.styleFrom(
+    shadowColor: AppColors.mainColor,
+    backgroundColor: AppColors.mainColor,
+    shape: RoundedRectangleBorder(
+        side: const BorderSide(
+          color: Colors.transparent,
+        ),
+        borderRadius: BorderRadius.circular(15)),
+  );
+}
+
+void _showSnackBar(BuildContext context, String message) {
+  final snackBar = SnackBar(content: Text(message));
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
 
 class FormWidget extends StatefulWidget {
   FormWidget({super.key});
@@ -154,17 +314,24 @@ class _FormWidgetState extends State<FormWidget> {
                           onPressed: () {
                             if (_formKeySub.currentState!.validate()) {
                               _formKeySub.currentState?.save();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SendForm(
-                                      name: _loginFormController.text,
-                                      signInModel: SignInModel(
-                                          login: _loginFormController.text,
-                                          password:
-                                              _passwordFormController.text),
-                                    ),
-                                  ));
+
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => SendForm2(
+                              //         name: _loginFormController.text,
+                              //         signInModel: SignInModel(
+                              //             login: _loginFormController.text,
+                              //             password:
+                              //                 _passwordFormController.text),
+                              //       ),
+                              //     ));
+                              BlocProvider.of<SignBloc>(context, listen: false)
+                                  .add(UserSignInEvent(
+                                signInModel: SignInModel(
+                                    login: _loginFormController.text,
+                                    password: _passwordFormController.text),
+                              ));
                             }
                           },
                           child: Text(
@@ -308,35 +475,4 @@ Widget passwordFormWithTittle(String tittle, double size,
       ),
     ],
   );
-}
-
-class SendForm extends StatelessWidget {
-  const SendForm({super.key, required this.signInModel, required this.name});
-  final SignInModel signInModel;
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    BlocProvider.of<SignBloc>(context, listen: false)
-        .add(UserSignInEvent(signInModel: signInModel));
-    return BlocBuilder<SignBloc, UserSignState>(
-      builder: ((context, state) {
-        if (state is UserLoadingState) {
-          return Center(child: CircularProgressIndicator());
-        } else if (state is UserLoadedState) {
-          return GroupHomeScreen(name: name);
-        } else if (state is UserErrorState) {
-          return Scaffold(
-            body: Center(
-                child: Text(
-              'Bad result',
-              style: TextStyle(fontSize: 50, color: Colors.red),
-            )),
-          );
-        } else {
-          return Container();
-        }
-      }),
-    );
-  }
 }

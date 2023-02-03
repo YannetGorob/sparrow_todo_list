@@ -76,4 +76,3 @@ class _ListOfTasksWidgetState extends State<ListOfTasksWidget> {
   }
 }
 
-//|| state.method == 'changeStatus'

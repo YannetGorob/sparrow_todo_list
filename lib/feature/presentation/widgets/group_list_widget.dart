@@ -60,7 +60,8 @@ class _GroupListWidgetState extends State<GroupListWidget> {
         }
       },
       listener: (context, state) {
-        if ((state is GroupLoadedState) && (state.method == 'create' || state.method == 'delete')) {
+        if ((state is GroupLoadedState) &&
+            (state.method == 'create' || state.method == 'delete')) {
           BlocProvider.of<GroupListBloc>(context, listen: false)
               .add(GetGroupEvent());
         }
